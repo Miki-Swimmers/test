@@ -97,12 +97,21 @@ class WalletService
         });
     }
 
-    public function getBalance(int $userId): array
+    /**
+     * Получение баланса
+     *
+     * @param int $userId
+     * @return Balance
+     */
+    public function getBalance(int $userId): Balance
     {
-        $user = User::find($userId);
-        if (!$user) abort(404, 'User not found');
+        $user = User::query()->find($userId);
+        if (!$user) abort(404, 'Пользователь не найден!');
 
-        $balance = Balance::firstOrCreate(['user_id' => $userId], ['amount' => 0]);
-        return ['user_id' => $userId, 'balance' => (float)$balance->amount];
+        $balance = Balance::query()->firstOrCreate(
+            ['user_id' => $userId],
+            ['amount' => 0]
+        );
+        return $balance->load('user');
     }
 }

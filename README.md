@@ -7,6 +7,71 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# Wallet Service (Тестовое задание)
+
+---
+
+## Описание
+API-сервис для управления балансом пользователей (CRUD баланса, перевод средств между пользователями, история транзакций). Выполнен на Laravel + PostgreSQL, работает в Docker.
+
+## Быстрый старт
+
+```bash
+git clone <ваш-репозиторий>
+cd <project_folder>
+docker-compose up --build -d
+```
+
+Приложение будет доступно по адресу: http://localhost
+
+### Миграции и сиды (можно выполнить внутри контейнера):
+
+```bash
+docker-compose exec app php artisan migrate
+```
+
+## Данные для подключения к PostgreSQL (из docker-compose):
+- HOST: db
+- USER: test_usr
+- PASSWORD: test_password
+- DB: test_services
+
+---
+
+## API endpoints
+
+- **POST /api/deposit** — пополнение баланса
+  - `{ "user_id":1, "amount":500.00, "comment":"Пополнение через карту" }`
+  - Ответ: `{ "user_id":1, "balance":500 }`
+
+- **POST /api/withdraw** — списание средств
+  - `{ "user_id":1, "amount":200.00, "comment":"Покупка подписки" }`
+  - Ответ: `{ "user_id":1, "balance":300 }`
+
+- **POST /api/transfer** — перевод между пользователями
+  - `{ "from_user_id":1, "to_user_id":2, "amount":100.00, "comment":"Перевод другу" }`
+  - Ответ: `{ "from": {"user_id":1, "balance":200}, "to": {"user_id":2,"balance":100} }`
+
+- **GET /api/balance/{user_id}** — получить баланс
+  - Ответ: `{ "user_id":1, "balance":200 }`
+
+---
+
+## Примеры ответов об ошибках
+- **404**: `{ "message": "User not found" }`
+- **409**: `{ "message": "Insufficient funds" }`
+- **422**: Ошибка валидации параметров
+
+---
+
+## Тесты
+Для запуска автотестов:
+```bash
+docker-compose exec app php artisan test
+```
+
+---
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
