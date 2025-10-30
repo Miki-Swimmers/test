@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\WalletController;
 
 Route::post('/deposit', [WalletController::class, 'deposit']);

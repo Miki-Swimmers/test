@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -45,4 +46,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    /**
+     * @return hasMany
+     */
+    public function balance(): hasMany
+    {
+        return $this->hasMany(Balance::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            $user->balance()->create(['amount' => 0]);
+        });
+    }
+
 }

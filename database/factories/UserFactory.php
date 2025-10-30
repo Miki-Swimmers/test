@@ -41,4 +41,14 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * @return Factory|UserFactory
+     */
+    public function configure(): Factory|UserFactory
+    {
+        return $this->afterCreating(function ($user) {
+            $user->balance()->create(['amount' => 0]);
+        });
+    }
 }
