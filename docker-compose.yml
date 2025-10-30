@@ -12,32 +12,32 @@ services:
       - app
   
   mariadb:
-    image: mariadb:latest
+    image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      MARIADB_ROOT_PASSWORD: root
-      MARIADB_USER: test_usr
-      MARIADB_PASSWORD: test_password
-      MARIADB_DATABASE: test_services
-  
+      POSTGRES_DB: test_services
+      POSTGRES_USER: test_usr
+      POSTGRES_PASSWORD: test_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: adminer:latest
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8080:8080"
     environment:
-      PMA_ARBITRARY: 1
-      PMA_HOST: mariadb
-      PMA_USER: test_usr
-      PMA_PASSWORD: test_password
-  
+      ADMINER_DEFAULT_SERVER: mariadb
+
   redis:
     image: redis:latest
     restart: unless-stopped
     ports:
       - "6379:6379"
     command: redis-server --requirepass root
-  
+
   app:
     container_name: test-app
     build: .docker/php-fpm
@@ -45,15 +45,19 @@ services:
     volumes:
       - .:/var/www
     environment:
+      DB_CONNECTION: pgsql
       DB_HOST: mariadb
-      DB_PORT: 3306
+      DB_PORT: 5432
       DB_DATABASE: test_services
       DB_USERNAME: test_usr
       DB_PASSWORD: test_password
-      
+
       REDIS_HOST: redis
       REDIS_PASSWORD: root
       REDIS_PORT: 6379
     depends_on:
       - redis
       - mariadb
+
+volumes:
+  pgdata:

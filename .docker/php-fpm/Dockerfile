@@ -25,8 +25,8 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     && pecl install redis \
     && docker-php-ext-configure pcntl --enable-pcntl \
-    && docker-php-ext-install opcache pdo pdo_mysql zip gd pcntl intl bcmath \
-    && docker-php-ext-enable redis gd opcache pcntl pdo_mysql zip intl bcmath
+    && docker-php-ext-install opcache pdo pdo_mysql pdo_pgsql zip gd pcntl intl bcmath \
+    && docker-php-ext-enable redis gd opcache pcntl pdo_mysql pdo_pgsql zip intl bcmath
 
 # Скачиваем composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
